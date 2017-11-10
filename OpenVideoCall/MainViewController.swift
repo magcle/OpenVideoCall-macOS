@@ -132,11 +132,14 @@ extension MainViewController: RoomVCDelegate {
 }
 
 extension MainViewController: AgoraRtcEngineDelegate {
-    func rtcEngine(_ engine: AgoraRtcEngineKit!, reportAudioVolumeIndicationOfSpeakers speakers: [Any]!, totalVolume: Int) {
+    func rtcEngine(_ engine: AgoraRtcEngineKit, reportAudioVolumeIndicationOfSpeakers speakers: [AgoraRtcAudioVolumeInfo], totalVolume: Int) {
         NotificationCenter.default.post(name: Notification.Name(rawValue: VolumeChangeNotificationKey), object: NSNumber(value: totalVolume as Int))
     }
+//    func rtcEngine(_ engine: AgoraRtcEngineKit, reportAudioVolumeIndicationOfSpeakers speakers: [Any]!, totalVolume: Int) {
+//        NotificationCenter.default.post(name: Notification.Name(rawValue: VolumeChangeNotificationKey), object: NSNumber(value: totalVolume as Int))
+//    }
     
-    func rtcEngine(_ engine: AgoraRtcEngineKit!, device deviceId: String!, type deviceType: AgoraRtcDeviceType, stateChanged state: Int) {
+    func rtcEngine(_ engine: AgoraRtcEngineKit, device deviceId: String, type deviceType: AgoraRtcDeviceType, stateChanged state: Int) {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: DeviceListChangeNotificationKey), object: NSNumber(value: deviceType.rawValue))
     }
 }

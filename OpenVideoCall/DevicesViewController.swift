@@ -115,8 +115,9 @@ class DevicesViewController: NSViewController {
         if isInputTesting {
             isInputTesting = false
         }
-        let deviceId = recordingDevices[sender.indexOfSelectedItem].deviceId
-        agoraKit.setDevice(.deviceType_Audio_Recording, deviceId: deviceId)
+        if let deviceId = recordingDevices[sender.indexOfSelectedItem].deviceId {
+            agoraKit.setDevice(.deviceType_Audio_Recording, deviceId: deviceId)
+        }
     }
     
     @IBAction func doInputDeviceTestClicked(_ sender: NSButton) {
@@ -132,8 +133,9 @@ class DevicesViewController: NSViewController {
         if isOutputTesting {
             isOutputTesting = false
         }
-        let deviceId = playoutDevices[sender.indexOfSelectedItem].deviceId
-        agoraKit.setDevice(.deviceType_Audio_Playout, deviceId: deviceId)
+        if let deviceId = playoutDevices[sender.indexOfSelectedItem].deviceId {
+            agoraKit.setDevice(.deviceType_Audio_Playout, deviceId: deviceId)
+        }
     }
     
     @IBAction func doOutputDeviceTestClicked(_ sender: NSButton) {
@@ -149,8 +151,9 @@ class DevicesViewController: NSViewController {
         if isCameraputTesting {
             isCameraputTesting = false
         }
-        let deviceId = captureDevices[sender.indexOfSelectedItem].deviceId
-        agoraKit.setDevice(.deviceType_Video_Capture, deviceId: deviceId)
+        if let deviceId = captureDevices[sender.indexOfSelectedItem].deviceId {
+            agoraKit.setDevice(.deviceType_Video_Capture, deviceId: deviceId)
+        }
     }
     
     @IBAction func doCameraTestClicked(_ sender: NSButton) {
@@ -206,7 +209,7 @@ private extension DevicesViewController {
     }
     
     func loadDevice(of type: AgoraRtcDeviceType) {
-        guard let devices = agoraKit.enumerateDevices(type) as NSArray as? [AgoraRtcDeviceInfo] else {
+        guard let devices = agoraKit.enumerateDevices(type)! as NSArray as? [AgoraRtcDeviceInfo] else {
             return
         }
         
@@ -234,11 +237,11 @@ private extension DevicesViewController {
     func updatePopUpButton(_ button: NSPopUpButton, withValue value: String?, inValueList list: [AgoraRtcDeviceInfo]) {
         button.removeAllItems()
         button.addItems(withTitles: list.map({ (info) -> String in
-            return info.deviceName
+            return info.deviceName!
         }))
         
         let deviceIds = list.map { (info) -> String in
-            return info.deviceId
+            return info.deviceId!
         }
         if let value = value, let index = deviceIds.index(of: value) {
             button.selectItem(at: index)
