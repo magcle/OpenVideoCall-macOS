@@ -41,6 +41,7 @@
 		07D29C5F1E9E1F9900C3583C /* AgoraRtcEngineKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07D29C5E1E9E1F9900C3583C /* AgoraRtcEngineKit.framework */; };
 		07D29C621E9E1FC200C3583C /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 07D29C611E9E1FC200C3583C /* libresolv.tbd */; };
 		07F531C71E28B237009BFE58 /* OpenVideoCallUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F531C61E28B237009BFE58 /* OpenVideoCallUITests.swift */; };
+		0F2747D31FB57A84005D3DBA /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F2747D21FB57A7D005D3DBA /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +96,7 @@
 		07F531C41E28B237009BFE58 /* OpenVideoCallUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenVideoCallUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		07F531C61E28B237009BFE58 /* OpenVideoCallUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenVideoCallUITests.swift; sourceTree = "<group>"; };
 		07F531C81E28B237009BFE58 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0F2747D21FB57A7D005D3DBA /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0F2747D31FB57A84005D3DBA /* SystemConfiguration.framework in Frameworks */,
 				07D29C621E9E1FC200C3583C /* libresolv.tbd in Frameworks */,
 				07C2D01A1D6C30DE00C84349 /* CoreWLAN.framework in Frameworks */,
 				07C2D0181D6C30D300C84349 /* CoreAudio.framework in Frameworks */,
@@ -220,6 +223,7 @@
 		07D29C601E9E1FC200C3583C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0F2747D21FB57A7D005D3DBA /* SystemConfiguration.framework */,
 				07D29C611E9E1FC200C3583C /* libresolv.tbd */,
 			);
 			name = Frameworks;

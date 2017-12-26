@@ -257,7 +257,7 @@ private extension RoomViewController {
         
         let minSize = CGSize(width: 960, height: 600)
         window.minSize = minSize
-        window.maxSize = CGSize(width: CGFloat(FLT_MAX), height: CGFloat(FLT_MAX))
+        window.maxSize = CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
         window.setContentSize(minSize)
     }
     
@@ -427,19 +427,19 @@ private extension RoomViewController {
 
 //MARK: - agora media kit delegate
 extension RoomViewController: AgoraRtcEngineDelegate {
-    func rtcEngineConnectionDidInterrupted(_ engine: AgoraRtcEngineKit!) {
+    func rtcEngineConnectionDidInterrupted(_ engine: AgoraRtcEngineKit) {
         alert(string: "Connection Interrupted")
     }
     
-    func rtcEngineConnectionDidLost(_ engine: AgoraRtcEngineKit!) {
+    func rtcEngineConnectionDidLost(_ engine: AgoraRtcEngineKit) {
         alert(string: "Connection Lost")
     }
     
-    func rtcEngine(_ engine: AgoraRtcEngineKit!, didOccurError errorCode: AgoraRtcErrorCode) {
+    func rtcEngine(_ engine: AgoraRtcEngineKit, didOccurError errorCode: AgoraRtcErrorCode) {
         alert(string: "errorCode \(errorCode.rawValue)")
     }
     
-    func rtcEngine(_ engine: AgoraRtcEngineKit!, firstRemoteVideoDecodedOfUid uid: UInt, size: CGSize, elapsed: Int) {
+    func rtcEngine(_ engine: AgoraRtcEngineKit, firstRemoteVideoDecodedOfUid uid: UInt, size: CGSize, elapsed: Int) {
         let userSession = videoSession(of: uid)
         let sie = size.fixedSize()
         userSession.size = sie
@@ -448,7 +448,7 @@ extension RoomViewController: AgoraRtcEngineDelegate {
     }
     
     // first local video frame
-    func rtcEngine(_ engine: AgoraRtcEngineKit!, firstLocalVideoFrameWith size: CGSize, elapsed: Int) {
+    func rtcEngine(_ engine: AgoraRtcEngineKit, firstLocalVideoFrameWith size: CGSize, elapsed: Int) {
         if let selfSession = videoSessions.first {
             selfSession.size = size.fixedSize()
             updateInterface(with: videoSessions)
@@ -456,7 +456,7 @@ extension RoomViewController: AgoraRtcEngineDelegate {
     }
     
     // user offline
-    func rtcEngine(_ engine: AgoraRtcEngineKit!, didOfflineOfUid uid: UInt, reason: AgoraRtcUserOfflineReason) {
+    func rtcEngine(_ engine: AgoraRtcEngineKit, didOfflineOfUid uid: UInt, reason: AgoraRtcUserOfflineReason) {
         var indexToDelete: Int?
         for (index, session) in videoSessions.enumerated() {
             if session.uid == uid {
@@ -474,30 +474,30 @@ extension RoomViewController: AgoraRtcEngineDelegate {
     }
     
     // video muted
-    func rtcEngine(_ engine: AgoraRtcEngineKit!, didVideoMuted muted: Bool, byUid uid: UInt) {
+    func rtcEngine(_ engine: AgoraRtcEngineKit, didVideoMuted muted: Bool, byUid uid: UInt) {
         setVideoMuted(muted, forUid: uid)
     }
     
     //remote stat
-    func rtcEngine(_ engine: AgoraRtcEngineKit!, remoteVideoStats stats: AgoraRtcRemoteVideoStats!) {
-        if let stats = stats, let session = fetchSession(of: stats.uid) {
+    func rtcEngine(_ engine: AgoraRtcEngineKit, remoteVideoStats stats: AgoraRtcRemoteVideoStats) {
+        if let session = fetchSession(of: stats.uid) {
             session.updateMediaInfo(resolution: CGSize(width: CGFloat(stats.width), height: CGFloat(stats.height)), bitRate: Int(stats.receivedBitrate), fps: Int(stats.receivedFrameRate))
         }
     }
     
-    func rtcEngine(_ engine: AgoraRtcEngineKit!, device deviceId: String!, type deviceType: AgoraRtcDeviceType, stateChanged state: Int) {
+    func rtcEngine(_ engine: AgoraRtcEngineKit, device deviceId: String, type deviceType: AgoraRtcDeviceType, stateChanged state: Int) {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: DeviceListChangeNotificationKey), object: NSNumber(value: deviceType.rawValue))
     }
     
     //data channel
-    func rtcEngine(_ engine: AgoraRtcEngineKit!, receiveStreamMessageFromUid uid: UInt, streamId: Int, data: Data!) {
-        guard let data = data, let string = String(data: data, encoding: String.Encoding.utf8) , !string.isEmpty else {
+    func rtcEngine(_ engine: AgoraRtcEngineKit, receiveStreamMessageFromUid uid: UInt, streamId: Int, data: Data) {
+        guard let string = String(data: data, encoding: String.Encoding.utf8) , !string.isEmpty else {
             return
         }
         chatMessageVC?.append(chat: string, fromUid: Int64(uid))
     }
     
-    func rtcEngine(_ engine: AgoraRtcEngineKit!, didOccurStreamMessageErrorFromUid uid: UInt, streamId: Int, error: Int, missed: Int, cached: Int) {
+    func rtcEngine(_ engine: AgoraRtcEngineKit, didOccurStreamMessageErrorFromUid uid: UInt, streamId: Int, error: Int, missed: Int, cached: Int) {
         chatMessageVC?.append(alert: "Data channel error: \(error)")
     }
 }
