@@ -116,7 +116,7 @@ class DevicesViewController: NSViewController {
             isInputTesting = false
         }
         if let deviceId = recordingDevices[sender.indexOfSelectedItem].deviceId {
-            agoraKit.setDevice(.deviceType_Audio_Recording, deviceId: deviceId)
+            agoraKit.setDevice(.audioRecording, deviceId: deviceId)
         }
     }
     
@@ -126,7 +126,7 @@ class DevicesViewController: NSViewController {
     
     @IBAction func doInputVolSliderChanged(_ sender: NSSlider) {
         let vol = sender.intValue
-        agoraKit.setDeviceVolume(.deviceType_Audio_Recording, volume: vol)
+        agoraKit.setDeviceVolume(.audioRecording, volume: vol)
     }
     
     @IBAction func doOutputDeviceChanged(_ sender: NSPopUpButton) {
@@ -134,7 +134,7 @@ class DevicesViewController: NSViewController {
             isOutputTesting = false
         }
         if let deviceId = playoutDevices[sender.indexOfSelectedItem].deviceId {
-            agoraKit.setDevice(.deviceType_Audio_Playout, deviceId: deviceId)
+            agoraKit.setDevice(.audioPlayout, deviceId: deviceId)
         }
     }
     
@@ -144,7 +144,7 @@ class DevicesViewController: NSViewController {
     
     @IBAction func doOutputVolSliderChanged(_ sender: NSSlider) {
         let vol = sender.intValue
-        agoraKit.setDeviceVolume(.deviceType_Audio_Playout, volume: vol)
+        agoraKit.setDeviceVolume(.audioPlayout, volume: vol)
     }
     
     @IBAction func doCameraChanged(_ sender: NSPopUpButton) {
@@ -152,7 +152,7 @@ class DevicesViewController: NSViewController {
             isCameraputTesting = false
         }
         if let deviceId = captureDevices[sender.indexOfSelectedItem].deviceId {
-            agoraKit.setDevice(.deviceType_Video_Capture, deviceId: deviceId)
+            agoraKit.setDevice(.videoCapture, deviceId: deviceId)
         }
     }
     
@@ -189,12 +189,12 @@ private extension DevicesViewController {
 //MARK: - device list
 private extension DevicesViewController {
     func loadDevices() {
-        loadDevice(of: .deviceType_Audio_Playout)
-        loadDevice(of: .deviceType_Audio_Recording)
-        loadDevice(of: .deviceType_Video_Capture)
+        loadDevice(of: .audioPlayout)
+        loadDevice(of: .audioRecording)
+        loadDevice(of: .videoCapture)
         
         NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: DeviceListChangeNotificationKey), object: nil, queue: nil) { [weak self] (notify) in
-            if let obj = notify.object as? NSNumber, let type = AgoraRtcDeviceType(rawValue: obj.intValue) {
+            if let obj = notify.object as? NSNumber, let type = AgoraMediaDeviceType(rawValue: obj.intValue) {
                 self?.loadDevice(of: type)
             }
         }
@@ -208,22 +208,22 @@ private extension DevicesViewController {
         }
     }
     
-    func loadDevice(of type: AgoraRtcDeviceType) {
+    func loadDevice(of type: AgoraMediaDeviceType) {
         guard let devices = agoraKit.enumerateDevices(type)! as NSArray as? [AgoraRtcDeviceInfo] else {
             return
         }
         
         let deviceId = agoraKit.getDeviceId(type)
         switch type {
-        case .deviceType_Audio_Recording:
+        case .audioRecording:
             recordingDevices = devices
             recordingDeviceId = deviceId
             updatePopUpButton(inputDevicePopUpButton, withValue: deviceId, inValueList: devices)
-        case .deviceType_Audio_Playout:
+        case .audioPlayout:
             playoutDevices = devices
             playoutDeviceId = deviceId
             updatePopUpButton(outputDevicePopUpButton, withValue: deviceId, inValueList: devices)
-        case .deviceType_Video_Capture:
+        case .videoCapture:
             captureDevices = devices
             captureDeviceId = deviceId
             updatePopUpButton(cameraPopUpButton, withValue: deviceId, inValueList: devices)
@@ -248,12 +248,12 @@ private extension DevicesViewController {
         }
     }
     
-    func updateVolume(of type: AgoraRtcDeviceType) {
+    func updateVolume(of type: AgoraMediaDeviceType) {
         switch type {
-        case .deviceType_Audio_Recording:
+        case .audioRecording:
             let vol = agoraKit.getDeviceVolume(type)
             inputDeviceVolSlider.intValue = vol
-        case .deviceType_Audio_Playout:
+        case .audioPlayout:
             let vol = agoraKit.getDeviceVolume(type)
             outputDeviceVolSlider.intValue = vol
         default:

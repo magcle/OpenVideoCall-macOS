@@ -31,7 +31,7 @@ class VideoSession: NSObject {
         canvas = AgoraRtcVideoCanvas()
         canvas.uid = uid
         canvas.view = hostingView.videoView
-        canvas.renderMode = .render_Fit
+        canvas.renderMode = .fit
     }
 }
 
