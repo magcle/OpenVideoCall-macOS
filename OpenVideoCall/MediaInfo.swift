@@ -15,7 +15,7 @@ struct MediaInfo {
     
     init() {}
     
-    init?(videoProfile: AgoraRtcVideoProfile) {
+    init?(videoProfile: AgoraVideoProfile) {
         if let resolution = videoProfile.resolution(), let bitRate = videoProfile.bitRate() {
             self.resolution = resolution
             self.bitRate = bitRate
@@ -30,26 +30,26 @@ struct MediaInfo {
     }
 }
 
-extension AgoraRtcVideoProfile {
-    static func defaultProfile() -> AgoraRtcVideoProfile {
-        return ._VideoProfile_360P
+extension AgoraVideoProfile {
+    static func defaultProfile() -> AgoraVideoProfile {
+        return .landscape360P
     }
     
-    static func validProfileList() -> [AgoraRtcVideoProfile] {
-        return [._VideoProfile_120P,
-                ._VideoProfile_240P,
-                ._VideoProfile_360P,
-                ._VideoProfile_480P,
-                ._VideoProfile_720P]
+    static func validProfileList() -> [AgoraVideoProfile] {
+        return [.landscape120P,
+                .landscape240P,
+                .landscape360P,
+                .landscape480P,
+                .landscape720P]
     }
     
     func resolution() -> CGSize? {
         switch self {
-        case ._VideoProfile_120P: return CGSize(width: 160, height: 120)
-        case ._VideoProfile_240P: return CGSize(width: 320, height: 240)
-        case ._VideoProfile_360P: return CGSize(width: 640, height: 360)
-        case ._VideoProfile_480P: return CGSize(width: 640, height: 480)
-        case ._VideoProfile_720P: return CGSize(width: 1280, height: 720)
+        case .landscape120P: return CGSize(width: 160, height: 120)
+        case .landscape240P: return CGSize(width: 320, height: 240)
+        case .landscape360P: return CGSize(width: 640, height: 360)
+        case .landscape480P: return CGSize(width: 640, height: 480)
+        case .landscape720P: return CGSize(width: 1280, height: 720)
         default: return nil
         }
     }
@@ -60,11 +60,11 @@ extension AgoraRtcVideoProfile {
     
     func bitRate() -> Int? {
         switch self {
-        case ._VideoProfile_120P: return 65
-        case ._VideoProfile_240P: return 200
-        case ._VideoProfile_360P: return 400
-        case ._VideoProfile_480P: return 500
-        case ._VideoProfile_720P: return 1130
+        case .landscape120P: return 65
+        case .landscape240P: return 200
+        case .landscape360P: return 400
+        case .landscape480P: return 500
+        case .landscape720P: return 1130
         default: return nil
         }
     }

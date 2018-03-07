@@ -9,14 +9,14 @@
 import Cocoa
 
 protocol SettingsVCDelegate: class {
-    func settingsVC(_ settingsVC: SettingsViewController, closeWithProfile videoProfile: AgoraRtcVideoProfile)
+    func settingsVC(_ settingsVC: SettingsViewController, closeWithProfile videoProfile: AgoraVideoProfile)
 }
 
 class SettingsViewController: NSViewController {
 
     @IBOutlet weak var profilePopUpButton: NSPopUpButton!
     
-    var videoProfile: AgoraRtcVideoProfile!
+    var videoProfile: AgoraVideoProfile!
     var delegate: SettingsVCDelegate?
     
     override func viewDidLoad() {
@@ -29,7 +29,7 @@ class SettingsViewController: NSViewController {
     }
     
     @IBAction func doProfileChanged(_ sender: NSPopUpButton) {
-        let profile = AgoraRtcVideoProfile.validProfileList()[sender.indexOfSelectedItem]
+        let profile = AgoraVideoProfile.validProfileList()[sender.indexOfSelectedItem]
         videoProfile = profile
     }
     
@@ -40,7 +40,7 @@ class SettingsViewController: NSViewController {
 
 private extension SettingsViewController {
     func loadProfileItems() {
-        profilePopUpButton.addItems(withTitles: AgoraRtcVideoProfile.validProfileList().map { (res) -> String in
+        profilePopUpButton.addItems(withTitles: AgoraVideoProfile.validProfileList().map { (res) -> String in
             return res.description()
         })
         profilePopUpButton.selectItem(withTitle: videoProfile.description())

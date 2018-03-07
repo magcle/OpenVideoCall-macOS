@@ -17,7 +17,7 @@ class MainViewController: NSViewController {
     @IBOutlet weak var joinButton: NSButton!
     @IBOutlet weak var settingsButton: NSButton!
     
-    var videoProfile = AgoraRtcVideoProfile.defaultProfile()
+    var videoProfile = AgoraVideoProfile.defaultProfile()
     fileprivate var agoraKit: AgoraRtcEngineKit!
     fileprivate var encryptionType = EncryptionType.xts128
     
@@ -102,7 +102,7 @@ private extension MainViewController {
 }
 
 extension MainViewController: SettingsVCDelegate {
-    func settingsVC(_ settingsVC: SettingsViewController, closeWithProfile profile: AgoraRtcVideoProfile) {
+    func settingsVC(_ settingsVC: SettingsViewController, closeWithProfile profile: AgoraVideoProfile) {
         videoProfile = profile
         settingsVC.view.window?.contentViewController = self
     }
@@ -138,8 +138,8 @@ extension MainViewController: AgoraRtcEngineDelegate {
 //    func rtcEngine(_ engine: AgoraRtcEngineKit, reportAudioVolumeIndicationOfSpeakers speakers: [Any]!, totalVolume: Int) {
 //        NotificationCenter.default.post(name: Notification.Name(rawValue: VolumeChangeNotificationKey), object: NSNumber(value: totalVolume as Int))
 //    }
-    
-    func rtcEngine(_ engine: AgoraRtcEngineKit, device deviceId: String, type deviceType: AgoraRtcDeviceType, stateChanged state: Int) {
+
+    func rtcEngine(_ engine: AgoraRtcEngineKit, device deviceId: String, type deviceType: AgoraMediaDeviceType, stateChanged state: Int) {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: DeviceListChangeNotificationKey), object: NSNumber(value: deviceType.rawValue))
     }
 }
