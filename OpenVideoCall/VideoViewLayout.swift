@@ -63,28 +63,22 @@ class VideoViewLayout {
         
         switch videoViews.count {
         case 0:
-            //单人全屏
             let fullViewLayouts = layoutFullSessionView(selfView, inContainerView: containerView)
             layoutConstraints.append(contentsOf: fullViewLayouts)
             
         case 1:
-            //双人对方全屏
             let peerView = videoViews.first!
             let fullViewLayouts = layoutFullSessionView(peerView, inContainerView: containerView)
             layoutConstraints.append(contentsOf: fullViewLayouts)
             
-            //自己右上角
             let cornerViewLayouts = layoutCornerSessionView(selfView, inContainerView: containerView)
             layoutConstraints.append(contentsOf: cornerViewLayouts)
             
         default:
             if let fullView = fullView {
-                //一拖三形式
-                //全屏
                 let fullViewLayouts = layoutFullSessionView(fullView, inContainerView: containerView)
                 layoutConstraints.append(contentsOf: fullViewLayouts)
                 
-                //其他人左上角顺序排列，自己在最右
                 var smallViews = [VideoView]()
                 let smallCount = min(videoViews.count, MaxPeerCount)
                 var index = 0
@@ -105,7 +99,6 @@ class VideoViewLayout {
                 layoutConstraints.append(contentsOf: smallViewLayouts)
                 
             } else {
-                //等分屏，最多5*5
                 let layouts = layoutEqualSessionViews(allViews, inContainerView: containerView)
                 layoutConstraints.append(contentsOf: layouts)
             }
@@ -135,7 +128,6 @@ class VideoViewLayout {
 
 //MARK: - layouts
 private extension VideoViewLayout {
-    //全屏布局
     func layoutFullSessionView(_ view: NSView, inContainerView containerView: NSView) -> [NSLayoutConstraint] {
         containerView.addSubview(view)
         var layouts = [NSLayoutConstraint]()
@@ -148,7 +140,6 @@ private extension VideoViewLayout {
         return layouts
     }
     
-    //右上角布局
     func layoutCornerSessionView(_ view: NSView, inContainerView containerView: NSView) -> [NSLayoutConstraint] {
         containerView.addSubview(view)
         var layouts = [NSLayoutConstraint]()
@@ -172,7 +163,6 @@ private extension VideoViewLayout {
         return layouts
     }
     
-    //小屏滚动布局: 竖屏从左上开始向右排，横屏从右上开始，向下排
     func layoutSmallSessionViews(_ smallViews: [NSView], inContainerView containerView: NSView) -> [NSLayoutConstraint] {
         let ratio: CGFloat
         if targetSize.width > 0 && targetSize.height > 0 {
@@ -242,7 +232,6 @@ private extension VideoViewLayout {
         return layouts
     }
     
-    //等分屏布局
     func layoutEqualSessionViews(_ allViews: [NSView], inContainerView containerView: NSView) -> [NSLayoutConstraint] {
         
         var layouts = [NSLayoutConstraint]()
