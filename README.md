@@ -1,4 +1,4 @@
-# Open Video Call MacOS for Swift
+# Open Video Call for MacOS (Swift)
 
 This tutorial describes how to add video chat to your MacOS applications using Swift and the Agora Video SDK.
 
@@ -313,7 +313,6 @@ If the `segueId` is `roomVCToDevicesVC`, prepare the devices view through the se
 The Encryption dropdown menu in the `MainViewController` layout invokes the `doEncryptionChanged()` `IBAction` method. This method sets the `encryptionType` value to the selected index of `EncryptionType.allValue`.
 
 ``` Swift
-    //MARK: - user actions
     @IBAction func doEncryptionChanged(_ sender: NSPopUpButton) {
         encryptionType = EncryptionType.allValue[sender.indexOfSelectedItem]
     }
@@ -510,7 +509,6 @@ Ensure the field is valid before formatting the string input.
 2. Set `field.stringValue` to `legalString`, which replaces the field's text with the newly formatted text
 
 ``` Swift
-//MARK: - text field
 extension MainViewController: NSControlTextEditingDelegate {
     override func controlTextDidChange(_ obj: Notification) {
         guard let field = obj.object as? NSTextField else {
@@ -572,7 +570,6 @@ Variable|Description
 ``` Swift
 class RoomViewController: NSViewController {
 
-    //MARK: IBOutlet
     @IBOutlet weak var roomNameLabel: NSTextField!
     @IBOutlet weak var containerView: NSView!
     @IBOutlet weak var buttonContainerView: NSView!
@@ -611,7 +608,6 @@ Variable|Description
 `AgoraRtcEngineKit`|The Agora RTC Engine SDK object
 
 ``` Swift    
-    //MARK: public var
     var roomName: String!
     var encryptionSecret: String?
     var encryptionType: EncryptionType!
@@ -646,7 +642,6 @@ The `shouldHideFlowViews` variable defaults to `false`. When this variable chang
 	- If `shouldHideFlowViews` is `false`, set the focus to `messageTextField` using `becomeFirstResponder()` and show `messageInputerView` by setting its `isHidden` property to `false`
 
 ``` Swift    
-    //MARK: hide & show
     fileprivate var shouldHideFlowViews = false {
         didSet {
             buttonContainerView?.isHidden = shouldHideFlowViews
@@ -688,10 +683,6 @@ The `videoSessions` and `doubleClickFullSession` variables handle the video sess
 Initialize `videoSessions` to an empty array. When `videoSessions` is set, update the interface with the video sessions using `updateInterface()`.
 
 ``` Swift
-    //MARK: engine & session
-    
-    ...
-    
     fileprivate var videoSessions = [VideoSession]() {
         didSet {
             updateInterface(with: videoSessions)
@@ -727,7 +718,6 @@ The `audioMuted` and `videoMuted` variables are set to `false` by default, and m
 When `audioMuted` is set, the `muteAudioButton` image is updated, and the audio stream is muted/unmuted using `agoraKit.muteLocalAudioStream()`.
 
 ``` Swift
-    //MARK: mute
     fileprivate var audioMuted = false {
         didSet {
             muteAudioButton?.image = NSImage(named: audioMuted ? "btn_mute_blue" : "btn_mute")
@@ -767,7 +757,6 @@ The `nextStatus()` method toggles between active and non-active status states.
 
 
 ``` Swift
-    //MARK: screen sharing
     enum ScreenSharingStatus {
         case none, list, sharing
         
@@ -845,7 +834,6 @@ The `isInputing` variable is set to `false` as the default. When this is set:
 - The`messageButton` image is updated using `messageButton?.setImage()`.
 
 ``` Swift
-    //MARK: text message
     fileprivate var chatMessageVC: ChatMessageViewController?
     fileprivate var isInputing = false {
         didSet {
@@ -877,7 +865,6 @@ The `viewDidLoad()` method initializes the `RoomViewController`:
 5. Load the Agora RTC engine SDK using `loadAgoraKit()`.
 
 ``` Swift
-    //MARK: - life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         roomNameLabel.stringValue = roomName
@@ -924,7 +911,6 @@ The `prepare()` segue method manages the navigation for the `RoomViewController`
 The methods in this section manage the methods for the `IKImageBrowserView` class.
 
 ``` Swift
-//MARK: - IKImageView
 extension RoomViewController {
 	
 	...
@@ -991,7 +977,6 @@ The `doMessageInput()` method is invoked by the `messageTextField` UI text field
 -  Clear the text field by setting the `stringValue` property to an empty string
     
 ``` Swift
-    //MARK: - user action
     @IBAction func doMessageClicked(_ sender: NSButton) {
         isInputing = !isInputing
     }
@@ -1045,7 +1030,6 @@ The `doFilterClicked()` method is invoked by the `filterButton` UI button action
 The private methods for the `RoomViewController` are created as functions in a private extension.
 
 ``` Swift
-//MARK: - private
 private extension RoomViewController {
 
 	...
@@ -1136,7 +1120,6 @@ If the number of `sessions` is greater than or equal to `3`, set `doubleClickEna
 ``` Swift
         updateSelfViewVisiable()
         
-        //只有三人及以上时才能切换布局形式
         if sessions.count >= 3 {
             doubleClickEnabled = true
         } else {
@@ -1251,7 +1234,6 @@ If `shouldShow` is `false`, hide `windowListView` by setting the `isHidden` prop
 The `alert()` method appends an alert message to the chat message box using `chatMessageVC?.append()`.
 
 ``` Swift
-    //MARK: - alert
     func alert(string: String) {
         guard !string.isEmpty else {
             return
@@ -1265,7 +1247,6 @@ The `windowShouldClose()` is a public method required by `NSWindowDelegate` and 
 Invoke `leaveChannel()` and return `false`.
 
 ``` Swift
-//MARK: - window
 extension RoomViewController: NSWindowDelegate {
     func windowShouldClose(_ sender: Any) -> Bool {
         leaveChannel()
@@ -1280,7 +1261,6 @@ extension RoomViewController: NSWindowDelegate {
 The methods applying the Agora SDK are placed within a private extension for the `RoomViewController`.
 
 ``` Swift
-//MARK: - agora media kit
 private extension RoomViewController {
 	...
 }
@@ -1392,7 +1372,6 @@ Turn on screen share for the first item in `videoSessions` using `hostingView.sw
 - `window.name` is equal to `Full Screen`
 
 ``` Swift
-    //MARK: - screen sharing
     func startShareWindow(_ window: Window) {
         let windowId = window.id
         agoraKit?.startScreenCapture(UInt(windowId), withCaptureFreq: 15, bitRate: 0, andRect: CGRect.zero )
@@ -1421,7 +1400,6 @@ Ensure that `dataChannelId` is greater than `0` and `text.data` is valid before 
 - Append the message to the chat message view using `chatMessageVC?.append()`.
 
 ``` Swift
-    //MARK: - data channel
     func send(text: String) {
         if dataChannelId > 0, let data = text.data(using: String.Encoding.utf8) {
             agoraKit.sendStreamMessage(dataChannelId, data: data)
@@ -1435,7 +1413,6 @@ Ensure that `dataChannelId` is greater than `0` and `text.data` is valid before 
 The `AgoraRtcEngineDelegate` methods are added through an extension for the `RoomViewController`.
 
 ``` Swift
-//MARK: - agora media kit delegate
 extension RoomViewController: AgoraRtcEngineDelegate {
     
     ...
@@ -2162,7 +2139,6 @@ private extension DevicesViewController {
 	...
 }
 
-//MARK: - device list
 private extension DevicesViewController {
 	...
 }
