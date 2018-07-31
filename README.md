@@ -4,7 +4,7 @@ This tutorial describes how to add video chat to your MacOS applications using S
 
 With this sample app, you can:
 
-- [Join a channel](#??)
+- [Join a channel](#create-the-loadagorakit-method)
 - [Leave a channel](#create-the-leavechannel-method)
 - [Mute/unmute video and audio](#muteunmute-video-and-audio-methods)
 - [Enable/disable video](#enabledisable-video)
