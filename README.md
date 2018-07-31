@@ -6,9 +6,9 @@ With this sample app, you can:
 
 - [Join a channel](#??)
 - [Leave a channel](#create-the-leavechannel-method)
-- [Mute/unmute video and audio](#mute-unmute-video-and-audio-methods)
-- [Enable/disable video](#enable-video)
-- [Create an input/output device](#create-input-output-device-change-methods)
+- [Mute/unmute video and audio](#muteunmute-video-and-audio-methods)
+- [Enable/disable video](#enabledisable-video)
+- [Create input/output devices](#create-inputoutput-device-change-methods)
 - [Send a message to a channel](#create-the-send-method)
 - [Screen share](#screen-share-and-filter-methods)
 - [Set the resolution, the height, and the frame rate](#create-the-remotevideostats-event-listener)
@@ -964,7 +964,7 @@ Otherwise, use the `index` to retrieve the `window` from `windows.items` and sta
 These `IBAction` methods map to the UI elements for the `RoomViewController`:
 
 - [Message Methods](#message-methods)
-- [Mute/Unmute Video and Audio Methods](#mute-unmute-video-and-audio-methods)
+- [Mute/Unmute Video and Audio Methods](#muteunmute-video-and-audio-methods)
 - [Screen Share and Filter Methods](#screen-share-and-filter-methods)
 
 ##### Message Methods
@@ -1430,7 +1430,7 @@ extension RoomViewController: AgoraRtcEngineDelegate {
 - [Create the didOfflineOfUid Event Listener](#create-the-didofflineofuid-event-listener)
 - [Create the didVideoMuted Event Listener](#create-the-didvideomuted-event-listener)
 - [Create the remoteVideoStats Event Listener](#create-the-remotevideostats-event-listener)
-- [#Create the Device Changed Event Listener](#create-the-device-changed-event-listener)
+- [Create the Device Changed Event Listener](#create-the-device-changed-event-listener)
 - [Create the receiveStreamMessageFromUid Event Listener](#create-the-receivestreammessagefromuid-event-listener)
 - [Create the didOccurStreamMessageErrorFromUid Event Listener](#create-the-didoccurstreammessageerrorfromuid-event-listener)
 
@@ -2015,7 +2015,7 @@ If `couldTest` is `true`:
 
 #### Create IBAction Methods
 
-- [Create Input/Output Device Change Methods](#create-input-output-device-change-methods)
+- [Create Input/Output Device Change Methods](#create-inputoutput-device-change-methods)
 - [Create Input/Output Test Methods](#create-input-output-test-methods)
 - [Create Input/Output Volume Change Methods](#create-input-output-volume-change-methods)
 - [Create Camera Methods](#create-camera-methods)
