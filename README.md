@@ -4,16 +4,15 @@ This tutorial describes how to add video chat to your MacOS applications using S
 
 With this sample app, you can:
 
-- [Join/leave a channel](#create-the-dojoinpressed-ibaction-method)
-- [Mute/unmute audio](#video-and-audio-methods)
-- [Enable/disable video](#video-and-audio-methods)
-- [Device selection](#create-input-output-device-change-methods)
-- [Switch camera views](#camera-speaker-filter-and-close-methods)
+- [Join a channel](#??)
+- [Leave a channel](#create-the-leavechannel-method)
+- [Mute/unmute video and audio](#mute-unmute-video-and-audio-methods)
+- [Enable/disable video](#enable-video)
+- [Create an input/output device](#create-input-output-device-change-methods)
 - [Send a message to a channel](#create-the-send-method)
 - [Screen share](#screen-share-and-filter-methods)
-- [Set up the resolution, the frame rate, and the bit rate display](#create-the-remotevideostats-event-listener)
+- [Set the resolution, the height, and the frame rate](#create-the-remotevideostats-event-listener)
 - [Enable encryption](#create-the-loadagorakit-method)
-- [Enable/disable the black-and-white filter](#video-and-audio-methods)
 
 ## Prerequisites
 - Xcode 8.0+
@@ -31,12 +30,12 @@ To build and run the sample application, you must obtain an app ID:
 
 1. Create a developer account at [agora.io](https://dashboard.agora.io/signin/). Once you finish the sign-up process, you are redirected to the dashboard.
 2. Navigate in the dashboard tree on the left to **Projects** > **Project List**.
-3. Copy the App ID that you obtained from the dashboard into a text file. You will use this when you launch the application.
+3. Copy the app ID that you obtained from the dashboard into a text file. You will use this when you launch the application.
 
 
 ### Update and Run the Sample Application 
 
-1. Open `OpenVideoCall.xcodeproj` and edit the [`KeyCenter.swift`](OpenVideoCall/KeyCenter.swift) file. In the `KeyCenter` declaration, update `<#Your App Id#>` with your App ID.
+1. Open `OpenVideoCall.xcodeproj` and edit the [`KeyCenter.swift`](OpenVideoCall/KeyCenter.swift) file. In the `KeyCenter` declaration, update `<#Your App Id#>` with your app ID.
 
 	``` Swift
     static let AppId: String = <#Your App Id#>
@@ -56,13 +55,13 @@ To build and run the sample application, you must obtain an app ID:
 - [Add Frameworks and Libraries](#add-frameworks-and-libraries)
 - [Design the User Interface](#design-the-user-interface)
 - [Create the MainViewController Class](#create-the-mainviewcontroller-class)
-- [Create the MainViewController Class Extension](#create-mainviewcontroller-extension)
+- [Create the MainViewController Class Extension](#create-the-mainviewcontroller-class-extension)
 - [Create the MainViewController Class Delegates](#create-mainviewcontroller-delegates)
 - [Create the RoomViewController Class](#create-the-roomviewcontroller-class)
 - [Create RoomViewController Agora Methods and Delegates](#create-roomviewcontroller-agora-methods-and-delegates)
 - [Create the ChatMessageViewController Class](#create-the-chatmessageviewcontroller-class)
 - [Create the DevicesViewController Class](#create-the-devicesviewcontroller-class)
-- [Create the DevicesViewController Class Extensions](#create-devicesviewcontroller-extensions)
+- [Create the DevicesViewController Class Extensions](#create-the-devicesviewcontroller-class-extensions)
 - [Create the SettingsViewController Class](#create-the-settingsviewcontroller-class)
 
 ### Add Frameworks and Libraries
@@ -70,8 +69,7 @@ To build and run the sample application, you must obtain an app ID:
 Under the **Build Phases** tab, add the following frameworks and libraries to your project:
 
 - `SystemConfiguration.framework`
-- `libresolv.tbd`
-- `CoreWLAN.framework`
+- `libresolv.tbdroomview- `CoreWLAN.framework`
 - `CoreAudio.framework`
 - `CoreMedia.framework`
 - `AudioToolbox.framework`
@@ -85,7 +83,7 @@ Under the **Build Phases** tab, add the following frameworks and libraries to yo
 
 - [Add Assets](#add-assets)
 - [Create the MainViewController UI](#create-the-mainviewcontroller-ui)
-- [Create the RoomViewController UI and the ChatMessageViewController UI](#create-the-roomviewcontroller-ui-and-chatmessageviewcontroller-ui)
+- [Create the RoomViewController UI and the ChatMessageViewController UI](#create-the-roomviewcontroller-ui-and-the-chatmessageviewcontroller-ui)
 - [Create the DevicesViewController UI](#create-the-devicesviewcontroller-ui)
 - [Create the SettingsViewController UI](#create-the-settingsviewcontroller-ui)
 
@@ -234,7 +232,7 @@ The `viewDidLoad()` method initializes the `MainViewController`:
     }
 ```
 
-The `viewDidAppear()` method triggers when the view appears on the screen.
+The `viewDidAppear()` method is triggered when the view appears on the screen.
 
 Set the keyboard focus to the room's text input field using `roomInputTextField.becomeFirstResponder()`. 
 
@@ -310,7 +308,7 @@ If the `segueId` is `roomVCToDevicesVC`, prepare the devices view through the se
 
 #### Create the IBAction Methods
 
-The Encryption dropdown menu in the `MainViewController` layout invokes the `doEncryptionChanged()` `IBAction` method. This method sets the `encryptionType` value to the selected index of `EncryptionType.allValue`.
+The **Encryption** dropdown menu in the `MainViewController` layout invokes the `doEncryptionChanged()` `IBAction` method. This method sets the `encryptionType` value to the selected index of `EncryptionType.allValue`.
 
 ``` Swift
     @IBAction func doEncryptionChanged(_ sender: NSPopUpButton) {
@@ -355,7 +353,7 @@ private extension MainViewController {
 ```
 
 The `loadAgoraKit()` method intializes the Agora RTC engine.
-
+#### Enable/Disable Video
 Create `agoraKit` with the `KeyCenter.AppId` using `AgoraRtcEngineKit.sharedEngine()` and enable video using `agoraKit.enableVideo()`.
 
 ``` Swift
@@ -378,7 +376,7 @@ Initialize the selection with `encryptionType.description()` using `encryptionPo
     }
 ```
 
-The `enter()` method enters the user to the channel with the name `roomName`.
+The `enter()` method enters the user into the channel with the name `roomName`.
 
 Ensure `roomName` is valid before navigating from the main view to the room view by applying the identifier `roomNameVCToVideoVC` to `performSegue()`.
 
@@ -422,7 +420,9 @@ extension MainViewController: SettingsVCDelegate {
 
 The `roomVCNeedClose` method is a delegate method for the `RoomVCDelegate`. This method is invoked when the user leaves the room.
 
-Ensure `window` is valid before applying the remaining code, otherwise invoke `return`.
+Do one of the following:
+- If `window` is valid, apply the remaining code.
+- If `window` is invalid, invoke  `return`.
 
 ``` Swift    
 extension MainViewController: RoomVCDelegate {
@@ -438,10 +438,10 @@ extension MainViewController: RoomVCDelegate {
 
 ```
 
-1. Invoke `window.toggleFullScreen()` if the window's masking style has a `.fullScreen` option
-2. Add two additional options `.fullSizeContentView` and `.miniaturizable` to the window's masking style array using `window.styleMask.insert()`
-3. Set the window's delegate to `nil`
-4. Initialize the window's collection behavior using `NSWindowCollectionBehavior()`
+1. Invoke `window.toggleFullScreen()` if the window's masking style has a `.fullScreen` option.
+2. Add two additional options `.fullSizeContentView` and `.miniaturizable` to the window's masking style array using `window.styleMask.insert()`.
+3. Set the window's delegate to `nil`.
+4. Initialize the window's collection behavior using `NSWindowCollectionBehavior()`.
 
 ``` Swift    
         if window.styleMask.contains(.fullScreen) {
@@ -455,8 +455,8 @@ extension MainViewController: RoomVCDelegate {
 
 Set the content view controller to `self` and set the window to a fixed aspect ratio.
 
-1. Create a local variable `size` using `CGSize()`
-2. Set `minSize` and `maxSize` to `size` and set the current size by using `window.setContentSize()`
+1. Create a local variable `size` using `CGSize()`.
+2. Set the `minSize` and the `maxSize` to `size` and set the current size by using `window.setContentSize()`,
 
 ``` Swift    
         window.contentViewController = self
@@ -479,9 +479,9 @@ extension MainViewController: AgoraRtcEngineDelegate {
 }
 ```
 
-The `reportAudioVolumeIndicationOfSpeakers` callback triggers when the speaker volume indicators change.
+The `reportAudioVolumeIndicationOfSpeakers` callback is triggered when the speaker volume indicators change.
 
-Set a notification of the `VolumeChangeNotificationKey` notification name and `totalVolume` value using `NotificationCenter.default.post()`.
+Set a name for the `VolumeChangeNotificationKey` notification and the value for the `totalVolume` using `NotificationCenter.default.post()`.
 
 ``` Swift
     func rtcEngine(_ engine: AgoraRtcEngineKit, reportAudioVolumeIndicationOfSpeakers speakers: [AgoraRtcAudioVolumeInfo], totalVolume: Int) {
@@ -489,9 +489,9 @@ Set a notification of the `VolumeChangeNotificationKey` notification name and `t
     }
 ```
 
-The `device` callback triggers when the user's device is changed.
+The `device` callback is triggered when the user's device is changed.
 
-Set a notification of the `DeviceListChangeNotificationKey` notification name and `deviceType` value using `NotificationCenter.default.post()`.
+Set a name for the `DeviceListChangeNotificationKey` notification and the value for the `deviceType` using `NotificationCenter.default.post()`.
 
 ``` Swift
     func rtcEngine(_ engine: AgoraRtcEngineKit, device deviceId: String, type deviceType: AgoraMediaDeviceType, stateChanged state: Int) {
@@ -501,12 +501,12 @@ Set a notification of the `DeviceListChangeNotificationKey` notification name an
 
 #### Create the NSControlTextEditingDelegate
 
-The `controlTextDidChange()` method triggers when the text input field is being edited.
+The `controlTextDidChange()` method is triggered when the text input field is being edited.
 
-Ensure the field is valid before formatting the string input.
+Before formatting the string input, ensure that the field is valid .
 
-1. Format the field's string value using `MediaCharacter.updateToLegalMediaString()`
-2. Set `field.stringValue` to `legalString`, which replaces the field's text with the newly formatted text
+1. Format the field's string value using `MediaCharacter.updateToLegalMediaString()`.
+2. Set `field.stringValue` to `legalString`, which replaces the field's text with the newly formatted text.
 
 ``` Swift
 extension MainViewController: NSControlTextEditingDelegate {
@@ -537,7 +537,7 @@ extension MainViewController: NSControlTextEditingDelegate {
 
 #### Define the RoomVCDelegate Protocol
 
-The `roomVCNeedClose()` method is used for communication between the `RoomViewController` class and its delegate. The method informs the delegate to close the room.
+The `roomVCNeedClose()` method is used for communication between the `RoomViewController` class and its delegate. The method tells the delegate to close the room.
 
 ``` Swift
 import Cocoa
@@ -605,7 +605,7 @@ Variable|Description
 `encryptionType`|The encryption type for the room
 `videoProfile`|The video profile for the room
 `delegate`|The delegate for the `RoomViewController` class
-`AgoraRtcEngineKit`|The Agora RTC Engine SDK object
+`AgoraRtcEngineKit`|The Agora RTC engine SDK object
 
 ``` Swift    
     var roomName: String!
@@ -634,12 +634,12 @@ Variable|Description
 
 The `shouldHideFlowViews` variable defaults to `false`. When this variable changes:
 
-1. Set the `isHidden` property of `buttonContainerView`, `messageTableContainerView`, and `roomNameLabel` to the new value of `shouldHideFlowViews`
-2. If the screen sharing status is `.list` mode, set `screenSharingStatus` to `.none`
-3. Manage `messageTextField` and `messageInputerView` based on `shouldHideFlowViews`
+1. Set the `isHidden` property of the `buttonContainerView`, `messageTableContainerView`, and `roomNameLabel` to the new value of `shouldHideFlowViews`.
+2. If the screen sharing status is `.list` mode, set the `screenSharingStatus` to `.none`.
+3. Manage the `messageTextField` and the `messageInputerView` based on `shouldHideFlowViews`.
 
-	- If `shouldHideFlowViews` is `true`, remove the focus from `messageTextField` using `resignFirstResponder()` and hide `messageInputerView` by setting its `isHidden` property to `true`
-	- If `shouldHideFlowViews` is `false`, set the focus to `messageTextField` using `becomeFirstResponder()` and show `messageInputerView` by setting its `isHidden` property to `false`
+	- If `shouldHideFlowViews` is `true`, remove the focus from the `messageTextField` using the `resignFirstResponder()` and hide the `messageInputerView` by setting its `isHidden` property to `true`.
+	- If `shouldHideFlowViews` is `false`, set the focus to the `messageTextField` using the `becomeFirstResponder()` and show the `messageInputerView` by setting its `isHidden` property to `false`.
 
 ``` Swift    
     fileprivate var shouldHideFlowViews = false {
@@ -694,7 +694,7 @@ Initialize `doubleClickEnabled` to `false`.
 
 When `doubleClickFullSession` is set, update the interface with the video sessions using `updateInterface()` if the number of sessions is `3` or more, and the interface has not already been updated (to avoid duplication).
 
-Initialize `videoViewLayout` using `VideoViewLayout()`.
+Initialize the `videoViewLayout` using the `VideoViewLayout()`.
 
 The `dataChannelId` is set to `-1` by default and manages the room channel.
 
@@ -751,9 +751,9 @@ The `ScreenSharingStatus` enumerates values for `none`, `list`, and `sharing`.
 
 The `nextStatus()` method toggles between active and non-active status states.
 
-- If the current value is `.none`, return `.list`
-- If the current value is `.list`, return `.none`
-- If the current value is `.sharing`, return `.none`
+- If the current value is `.none`, return `.list`.
+- If the current value is `.list`, return `.none`.
+- If the current value is `.sharing`, return `.none`.
 
 
 ``` Swift
@@ -772,11 +772,11 @@ The `nextStatus()` method toggles between active and non-active status states.
 
 The `screenSharingStatus` variable is set to `ScreenSharingStatus.none` by default, and manages the current status of the screen share.
 
-When `screenSharingButton` is set:
+When the `screenSharingButton` is set:
 
 - The `screenSharingButton` image is updated.
 - If the old value is `.sharing`, the screen share stops `stopShareWindow()`.
-- The window list is shown/hidden based on if `screenSharingStatus` is equal to `.list`.
+- if `screenSharingStatus` is equal to `.list`, the window list is shown/hidden.
 
 The `windows` variable is initialized using `WindowList()`.
 
@@ -801,7 +801,7 @@ The `isFiltering` variable is set to `false` by default. When this variable is s
 
 - The creation of `agoraKit` is verified.
 - If filtering is enabled, set the video preprocessing using `AGVideoPreProcessing.registerVideoPreprocessing()` and update the `filterButton` with the blue image. 
-- If filtering is not enabled, unregister video preprocessing using `AGVideoPreProcessing.deregisterVideoPreprocessing()` and update the `filterButton` with the white image.
+- If filtering is not enabled, unregister the video preprocessing using `AGVideoPreProcessing.deregisterVideoPreprocessing()` and update the `filterButton` with the white image.
 
 ``` Swift
     fileprivate var isFiltering = false {
@@ -829,7 +829,7 @@ The `isInputing` variable is set to `false` as the default. When this is set:
 
 - Based on the current value of `isInputing`
 	- The `messageTextField` is activated/deactivated using `becomeFirstResponder()`/`resignFirstResponder()`.
-	- The `messageInputerView` is hidden/unhidden
+	- The `messageInputerView` is hidden/unhidden.
 
 - The`messageButton` image is updated using `messageButton?.setImage()`.
 
@@ -878,7 +878,7 @@ The `viewDidLoad()` method initializes the `RoomViewController`:
     }
 ```
 
-The `viewDidAppear()` method triggers when the view appears on the screen. Set the view's window configuration style using `configStyle()`. 
+The `viewDidAppear()` method is triggered when the view appears on the screen. Set the view's window configuration style using `configStyle()`. 
 
 ``` Swift
     override func viewDidAppear() {
@@ -936,11 +936,11 @@ The `itemAt` method returns the item at the specified `index` for the image brow
     }
 ```
 
-The `cellWasDoubleClickedAt` method triggers when a cell in the image browser is double-clicked.
+The `cellWasDoubleClickedAt` method is triggered when a cell in the image browser is double-clicked.
 
-If `aBrowser` has no selected index or the `index` is less than `windows.items.count` invoke `return`.
+If `aBrowser` has no selected index or the `index` is less than `windows.items.count`, invoke `return`.
 
-Otherwise, use `index` to retrieve the `window` from `windows.items` and start sharing the window using `startShareWindow()` and set `screenSharingStatus` to `.sharing`.
+Otherwise, use the `index` to retrieve the `window` from `windows.items` and start sharing the window using `startShareWindow()` and set `screenSharingStatus` to `.sharing`.
 
 ``` Swift
     override func imageBrowser(_ aBrowser: IKImageBrowserView!, cellWasDoubleClickedAt index: Int) {
@@ -963,18 +963,18 @@ Otherwise, use `index` to retrieve the `window` from `windows.items` and start s
 
 These `IBAction` methods map to the UI elements for the `RoomViewController`:
 
-- [Message Methods](#message-method)
-- [Video and Audio Methods](#video-and-audio-methods)
+- [Message Methods](#message-methods)
+- [Mute/Unmute Video and Audio Methods](#mute-unmute-video-and-audio-methods)
 - [Screen Share and Filter Methods](#screen-share-and-filter-methods)
 
-##### Message Method
+##### Message Methods
 
 The `doMessageClicked()` method is invoked by the `messageButton` UI button and updates `isInputing`.
 
 The `doMessageInput()` method is invoked by the `messageTextField` UI text field. If the text field is not empty:
 
--  Send the `text` using `send()`
--  Clear the text field by setting the `stringValue` property to an empty string
+-  Send the `text` using `send()`.
+-  Clear the text field by setting the `stringValue` property to an empty string.
     
 ``` Swift
     @IBAction func doMessageClicked(_ sender: NSButton) {
@@ -992,7 +992,7 @@ The `doMessageInput()` method is invoked by the `messageTextField` UI text field
     }
 ```
 
-##### Video and Audio Methods
+##### Mute/Unmute Video and Audio Methods
 
 The `doMuteVideoClicked()` method is invoked by the `muteVideoButton` UI button and updates `videoMuted`.
 
@@ -1047,12 +1047,12 @@ private extension RoomViewController {
 
 They `configStyle()` method sets the style of the application window.
 
-1. Set the window `delegate` to `self`
-2. Set the window's `collectionBehavior` property to an array containing `.fullScreenPrimary`
-3. Set the window minimum, maximum, and current size
-	- Set the window's minimum size to `960` x `600` using `CGSize()`
-	- Set the window's maximum size to the largest value possible using `CGFloat.greatestFiniteMagnitude` and `CGSize()`
-	- Set the current size to `minSize` using `window.setContentSize()`
+1. Set the window `delegate` to `self`.
+2. Set the window's `collectionBehavior` property to an array containing `.fullScreenPrimary`.
+3. Set the window minimum, maximum, and current size:
+	- Set the window's minimum size to `960` x `600` using `CGSize()`.
+	- Set the window's maximum size to the largest value possible using `CGFloat.greatestFiniteMagnitude` and `CGSize()`.
+	- Set the current size to `minSize` using `window.setContentSize()`.
 
 
 ``` Swift
@@ -1072,7 +1072,10 @@ They `configStyle()` method sets the style of the application window.
 
 The `updateInterface()` method handles layout updates for the video session.
 
-Ensure `sessions` is not empty before continuing with the remaining code, otherwise invoke `return`.
+Do one of the following:
+
+- If `sessions` is not empty, continue with the remaining code.
+- If `sessions` is empty, invoke `return`.
 
 ``` Swift
     func updateInterface(with sessions: [VideoSession]) {
@@ -1087,14 +1090,14 @@ Ensure `sessions` is not empty before continuing with the remaining code, otherw
 
 Update the `videoViewLayout` properties:
 
-- Initialize a local variable `selfSession` to `sessions.first`
-- Set the `selfView` property to `selfSession.hostingView`
-- Set the `selfSize` property to `selfSession.size`
-- Initialize a local variable `peerVideoViews` to an empty array
-- For each session in `sessions`, append the session's `hostingView`
+- Initialize a local variable `selfSession` to `sessions.first`.
+- Set the `selfView` property to `selfSession.hostingView`.
+- Set the `selfSize` property to `selfSession.size`.
+- Initialize a local variable `peerVideoViews` to an empty array.
+- For each session in `sessions`, append the sessio.n's `hostingView`.
 - Set the `videoViews` property to `peerVideoViews`
-- Set the `fullView` property to `doubleClickFullSession?.hostingView`
-- Set the `containerView` property to `containerView`
+- Set the `fullView` property to `doubleClickFullSession?.hostingView`.
+- Set the `containerView` property to `containerView`.
 
 Update the video views using `videoViewLayout.layoutVideoViews()`.
 
@@ -1187,15 +1190,15 @@ The `updateSelfViewVisiable()` method sets the user view to hidden/not hidden. I
     }
 ```
 
-The `setupWindowListView()` method updates `windowListView`:
+The `setupWindowListView()` method updates the `windowListView`:
 
-- Allow the width to be resizable using `windowListView.setContentResizingMask()`
-- Set `IKImageBrowserBackgroundColorKey` to semi-transparent white using `windowListView.setValue()`
-- Set the `IKImageBrowserCellsTitleAttributesKey`
-	1. Retrieve the old attributes value using `windowListView.value()`
-	2. Create a new local variable `attributres` using `oldAttributres.mutableCopy()`
-	3. Set the `NSForegroundColorAttributeName` of `attributres` to white using `attributres.setObject()`
-	4. Set the title attributes using `windowListView.setValue()`
+- Allow the width to be resizable using `windowListView.setContentResizingMask()`.
+- Set `IKImageBrowserBackgroundColorKey` to semi-transparent white using `windowListView.setValue()`.
+- Set the `IKImageBrowserCellsTitleAttributesKey`:
+	1. Retrieve the old attributes value using the `windowListView.value()`.
+	2. Create a new local variable `attributres` using `oldAttributres.mutableCopy()`.
+	3. Set the `NSForegroundColorAttributeName` of `attributres` to white using `attributres.setObject()`.
+	4. Set the title attributes using `windowListView.setValue()`.
 
 ``` Swift
     func setupWindowListView() {
@@ -1209,14 +1212,14 @@ The `setupWindowListView()` method updates `windowListView`:
     }
 ```
 
-The `showWindowList()` method shows/hides `windowListView`.
+The `showWindowList()` method shows/hides the `windowListView`.
 
 If `shouldShow` is `true`:
 
-1. Invoke `windows.getList()` and `windowListView?.reloadData()` to update and reload the list data 
-2. Show `windowListView` by setting the `isHidden` property to `false`
+1. Invoke `windows.getList()` and `windowListView?.reloadData()` to update and reload the list data. 
+2. Show the `windowListView` by setting the `isHidden` property to `false`.
 
-If `shouldShow` is `false`, hide `windowListView` by setting the `isHidden` property to `true`.
+If `shouldShow` is `false`, hide the `windowListView` by setting the `isHidden` property to `true`.
 
 
 ``` Swift
@@ -1242,7 +1245,7 @@ The `alert()` method appends an alert message to the chat message box using `cha
     }
 ```
 
-The `windowShouldClose()` is a public method required by `NSWindowDelegate` and triggers before the window closes.
+The `windowShouldClose()` is a public method required by `NSWindowDelegate` and is triggered before the window closes.
 
 Invoke `leaveChannel()` and return `false`.
 
@@ -1274,7 +1277,7 @@ private extension RoomViewController {
 - [Create the AgoraRtcEngineDelegate](#create-the-agorartcenginedelegate)
 
 
-#### Create the loadAgoraKit Method
+#### Create the loadAgoraKit() Method
 
 The `loadAgoraKit()` method initializes the Agora RTC engine using `AgoraRtcEngineKit.sharedEngine()`:
 
@@ -1316,9 +1319,9 @@ The `loadAgoraKit()` method initializes the Agora RTC engine using `AgoraRtcEngi
     }
 ```
 
-#### Create the addLocalSession Method
+#### Create the addLocalSession() Method
 
-The `addLocalSession()` method appends the local video session to `videoSessions` and sets up the local video view using `agoraKit.setupLocalVideo()`.
+The `addLocalSession()` method appends the local video session to the `videoSessions` and sets up the local video view using `agoraKit.setupLocalVideo()`.
 
 If `MediaInfo` is available for the `videoProfile`, set the media info property for the local session using `localSession.mediaInfo`.
 
@@ -1333,7 +1336,7 @@ If `MediaInfo` is available for the `videoProfile`, set the media info property 
     }
 ```
 
-#### Create the leaveChannel Method
+#### Create the leaveChannel() Method
 
 The `leaveChannel()` method enables the user to leave the video session.
 
@@ -1363,9 +1366,9 @@ The `leaveChannel()` method enables the user to leave the video session.
 
 The `startShareWindow()` method starts screen sharing.
 
-Capture the screen specified by `windowId` using `agoraKit?.startScreenCapture()`.
+Capture the screen specified by the `windowId` using `agoraKit?.startScreenCapture()`.
 
-Turn on screen share for the first item in `videoSessions` using `hostingView.switchToScreenShare()` if any of the following are `true`:
+Turn on screen share for the first item in the `videoSessions` using `hostingView.switchToScreenShare()` if any of the following are `true`:
 
 - `windowId` is equal to `0`
 - `window.name` is equal to `Agora Video Call`
@@ -1381,7 +1384,7 @@ Turn on screen share for the first item in `videoSessions` using `hostingView.sw
 
 The `stopShareWindow()` method stops screen sharing.
 
-Stop the screen capture the screen specified by using `agoraKit?.stopScreenCapture()` and turn of screen share for the first item in `videoSessions` using `hostingView.switchToScreenShare()`.
+Stop the screen capture the screen specified by using `agoraKit?.stopScreenCapture()` and turn of screen share for the first item in the `videoSessions` using `hostingView.switchToScreenShare()`.
 
 ``` Swift
     func stopShareWindow() {
@@ -1390,13 +1393,13 @@ Stop the screen capture the screen specified by using `agoraKit?.stopScreenCaptu
     }
 ```
 
-#### Create the send Method
+#### Create the send() Method
 
 The `send()` method sends a new message to the stream. 
 
-Ensure that `dataChannelId` is greater than `0` and `text.data` is valid before applying the following:
+Ensure that the `dataChannelId` is greater than `0` and that the `text.data` is valid before applying the following:
 
-- Send the message to the stream using `agoraKit.sendStreamMessage()`
+- Send the message to the stream using `agoraKit.sendStreamMessage()`.
 - Append the message to the chat message view using `chatMessageVC?.append()`.
 
 ``` Swift
@@ -1464,9 +1467,9 @@ Display an alert with the error code value `errorCode.rawValue`.
 
 The `firstRemoteVideoDecodedOfUid` event listener is triggered when the first remote video is decoded.
 
-1. Retrieve the video session of the user using `videoSession()`.
+1. Retrieve the video session of the user using the `videoSession()`.
 
-2. Set the session dimensions using `userSession.size` and update the media info using `userSession.updateMediaInfo()`.
+2. Set the session dimensions using the `userSession.size` and update the media info using the `userSession.updateMediaInfo()`.
 
 3. Complete the method by setting up the remote video using `agoraKit.setupRemoteVideo()`.
 
@@ -1484,10 +1487,10 @@ The `firstRemoteVideoDecodedOfUid` event listener is triggered when the first re
 
 The `firstLocalVideoFrameWith` event listener is triggered when the first local video frame has `elapsed`.
 
-Ensure `selfSession` is the first item in `videoSessions` before applying the following:
+Ensure that `selfSession` is the first item in the `videoSessions` before applying the following:
 
-- Set the dimensions of the video session using `selfSession.size`
-- Update the video interface using `updateInterface()`
+- Set the dimensions of the video session using `selfSession.size`.
+- Update the video interface using `updateInterface()`.
 
 ``` Swift
     // first local video frame
@@ -1503,9 +1506,9 @@ Ensure `selfSession` is the first item in `videoSessions` before applying the fo
 
 The `didOfflineOfUid` is triggered when a user goes offline.
 
-Loop through `videoSessions` to retrieve the video session of the offline user:
+Loop through the `videoSessions` to retrieve the video session of the offline user:
 
-- If the video session is found, remove the session `hostingView` from the superview using `removeFromSuperview()`.
+- If the video session is found, remove the session `hostingView` from the superview using `removeFromSuperview()`..
 - If the offline user session is `doubleClickFullSession`, set `doubleClickFullSession` to `nil`. 
 
 ``` Swift
@@ -1532,7 +1535,7 @@ Loop through `videoSessions` to retrieve the video session of the offline user:
 
 The `didVideoMuted` is triggered when a user turns off video.
 
-Set the video to off using `setVideoMuted()`.
+Set the video to `off` using `setVideoMuted()`.
 
 ``` Swift
     // video muted
@@ -1561,7 +1564,7 @@ Retrieve the video session for the user using `fetchSession()` and update the `r
 
 The device changed event listener is triggered when the device changes.
 
-Set a device notification with `DeviceListChangeNotificationKey` and the device type using `NotificationCenter.default.post()`. 
+Set a device notification with the `DeviceListChangeNotificationKey` and the device type using the `NotificationCenter.default.post()`. 
 
 ```
     func rtcEngine(_ engine: AgoraRtcEngineKit, device deviceId: String, type deviceType: AgoraMediaDeviceType, stateChanged state: Int) {
@@ -1597,7 +1600,7 @@ The `didOccurStreamMessageErrorFromUid` is triggered when a user message error o
 
 ### Create the ChatMessageViewController Class
 
-*ChatMessageViewController.swift* defines and connects application functionality with the [ChatMessageViewController UI](#create-chatmessageviewcontroller-ui).
+*ChatMessageViewController.swift* defines and connects application functionality with the [ChatMessageViewController UI](#create-the-roomviewcontroller-ui-and-the-chatmessageviewcontroller-ui).
 
 - [Add Global Variables and Superclass Overrides](#add-global-variables-and-superclass-overrides)
 - [Create append() Methods](#create-append-methods)
@@ -1605,7 +1608,7 @@ The `didOccurStreamMessageErrorFromUid` is triggered when a user message error o
 
 #### Add Global Variables and Superclass Overrides
 
-The `ChatMessageViewController` defines the `IBOutlet` variable `messageTableView`, which maps to the table created in the [ChatMessageViewController UI](#create-chatmessageviewcontroller-ui).
+The `ChatMessageViewController` defines the `IBOutlet` variable `messageTableView`, which maps to the table created in the [ChatMessageViewController UI](#create-the-roomviewcontroller-ui-and-the-chatmessageviewcontroller-ui).
 
 Initialize the private variable `messageList` to manage the array of messages for the chat.
 
@@ -1672,7 +1675,7 @@ The `updateMessageTable()` method is a helper method to handle messages for the 
 
 1. Check that the `messageTableView` exists. If it does not exist, stop the method using `return`.
 
-2. If `deleted` is equal to `nil`, remove the first message using `tableView.removeRows()`
+2. If `deleted` is equal to `nil`, remove the first message using `tableView.removeRows()`.
 
 3. Retrieve the `IndexSet` for the last message by using `messageList.count - 1`.
 
@@ -1732,15 +1735,15 @@ extension ChatMessageViewController: NSTableViewDelegate {
 }
 ```
 
-Cell the height for each cell in the table:
+Set the height for each cell in the table:
 
-1. Initialize a local `defaultHeight` variable to `24`
-2. Retrieve the text for the current row using `messageList[row].text`
-3. Retrieve the first column of the table using `tableView.tableColumns.first`
-4. Initialize a local `width` variable to `column.width - 24`
-5. Create a bouding rectangle for the text using string.boundingRect()
-6. Set the textHeight using `textRect.height + 6` and ensure the result is at least `defaultHeight`
-7. Return the resulting `textHeight`
+1. Initialize a local `defaultHeight` variable to `24`.
+2. Retrieve the text for the current row using `messageList[row].text`.
+3. Retrieve the first column of the table using `tableView.tableColumns.first`.
+4. Initialize a local `width` variable to `column.width - 24`.
+5. Create a bounding rectangle for the text using `string.boundingRect()`.
+6. Set the text height using `textRect.height + 6` and ensure that the result is at least `defaultHeight`.
+7. Return the resulting `textHeight`.
 
 ``` Swift
     func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
@@ -1759,7 +1762,6 @@ Cell the height for each cell in the table:
         return textHeight;
     }
 ```
-
 
 
 ### Create the DevicesViewController Class
@@ -1837,7 +1839,7 @@ Output Device Variable|Description
 
 The `DevicesViewController` class has two public variables and many private variables.
 
-- The `agoraKit` variable is the Agora RTC Engine that connects the sample application to the Agora SDK.
+- The `agoraKit` variable is the Agora RTC engine, which connects the sample application to the Agora SDK.
 
 - The `couldTest` variable is set to `true` as a default and acts as the indicator if the device can be tested.
 
@@ -1871,9 +1873,9 @@ Declare a set of private variables that apply changes to the sample application 
 
 The `isInputTesting` variable is set to `false` as a default. When the value changes:
 
-1. Change the configuration of `intputDeviceTestButton` using `config()`
-2. If `isInputTesting` is `true` start the recording device test using `agoraKit?.startRecordingDeviceTest()`, otherwise stop the test using `agoraKit?.stopRecordingDeviceTest()`
-3. Display / hide `inputDeviceVolLevelIndicator` by applying `isInputTesting` to the `isHidden` property
+1. Change the configuration of `intputDeviceTestButton` using `config()`.
+2. If `isInputTesting` is `true`, start the recording device test using `agoraKit?.startRecordingDeviceTest()`, Otherwise, stop the test using `agoraKit?.stopRecordingDeviceTest()`.
+3. Display/hide `inputDeviceVolLevelIndicator` by applying `isInputTesting` to the `isHidden` property.
 
 ``` Swift
     fileprivate var isInputTesting = false {
@@ -1891,13 +1893,13 @@ The `isInputTesting` variable is set to `false` as a default. When the value cha
 
 The `isOutputTesting` variable is set to `false` as a default. When the value changes:
 
-1. Change the configuration of `outputDeviceTestButton` using `config()`
+1. Change the configuration of the `outputDeviceTestButton` using `config()`.
 
-2. If `isOutputTesting` is `true` start the playback device test using `agoraKit?.startPlaybackDeviceTest()`, otherwise stop the test using `agoraKit?.stopPlaybackDeviceTest()`
+2. If `isOutputTesting` is `true`, start the playback device test using `agoraKit?.startPlaybackDeviceTest()`. Otherwise, stop the test using `agoraKit?.stopPlaybackDeviceTest().`
 
-	**Note:** Ensure the `path` for the test audio asset is valid before invoking `agoraKit?.startPlaybackDeviceTest()`.
+	**Note:** Ensure that the `path` for the test audio asset is valid before invoking the `agoraKit?.startPlaybackDeviceTest()`.
 
-3. Display / hide `inputDeviceVolLevelIndicator` by applying `isInputTesting` to the `isHidden` property
+3. Display/hide the `inputDeviceVolLevelIndicator` by applying `isInputTesting` to the `isHidden` property.
 
 
 ``` Swift
@@ -1917,9 +1919,9 @@ The `isOutputTesting` variable is set to `false` as a default. When the value ch
 
 The `isCameraputTesting` variable is set to `false` as a default. When the value changes:
 
-1. Change the configuration of `cameraTestButton` using `config()`
+1. Change the configuration of the `cameraTestButton` using `config()`.
 
-2. If `isCameraputTesting` is `true`, ensure the `view` for the video preview is valid and start the playback device test using `agoraKit?.startCaptureDeviceTest()`, otherwise stop the test using `agoraKit?.stopCaptureDeviceTest()`
+2. If `isCameraputTesting` is `true`, ensure that the `view` for the video preview is valid and start the playback device test using `agoraKit?.startCaptureDeviceTest()`. Otherwise, stop the test using `agoraKit?.stopCaptureDeviceTest()`.
 
 
 ``` Swift
@@ -1937,7 +1939,7 @@ The `isCameraputTesting` variable is set to `false` as a default. When the value
     }
 ```
 
-The `deviceVolume` variable is set to `0` as a default. When the value changes, set `inputDeviceVolLevelIndicator?.integerValue` to `deviceVolume`.
+The `deviceVolume` variable is set to `0` as a default. When the value changes, set the `inputDeviceVolLevelIndicator?.integerValue` to `deviceVolume`.
 
 
 ``` Swift
@@ -1950,14 +1952,14 @@ The `deviceVolume` variable is set to `0` as a default. When the value changes, 
 
 #### Create Superclass Override Methods
 
-The methods in this section override the `NSViewController` superclass methods that invoke when changes to the view occur.
+The methods in this section override the `NSViewController` superclass methods that are invoked when changes to the view occur.
 
-The `viewDidLoad()` method triggers when the view loads into the sample application.
+The `viewDidLoad()` method is triggered when the view loads into the sample application.
 
-1. Update the `wantsLayer` property of the `view` to `true`, and the layer's `backgroundColor` property to white
-2. Update the `wantsLayer` property of `cameraPreviewView` to `true`, and the layer's `backgroundColor` property to black
-3. Update the button style configurations using `configButtonStyle()`
-4. Load the devices using `loadDevices()`
+1. Update the `wantsLayer` property of the `view` to `true` and the layer's `backgroundColor` property to white.
+2. Update the `wantsLayer` property of the `cameraPreviewView` to `true` and the layer's `backgroundColor` property to black.
+3. Update the button style configurations using `configButtonStyle()`.
+4. Load the devices using `loadDevices()`.
 
 ``` Swift
     override func viewDidLoad() {
@@ -1974,7 +1976,7 @@ The `viewDidLoad()` method triggers when the view loads into the sample applicat
     }
 ```
 
-The `viewWillAppear()` method triggers when the view appears on the screen.
+The `viewWillAppear()` method is triggered when the view appears on the screen.
 
 Set the configuration style of `view.window` using `configStyle()`.
 
@@ -1985,13 +1987,13 @@ Set the configuration style of `view.window` using `configStyle()`.
     }
 ```
 
-The `viewWillDisappear()` method triggers the view is hidden from the screen.
+The `viewWillDisappear()` method is triggered the view is hidden from the screen.
 
 If `couldTest` is `true`:
 
-- Set `isInputTesting` to `false` if `isInputTesting` is valid
-- Set `isOutputTesting` to `false` if `isOutputTesting` is valid
-- Set `isCameraputTesting` to `false` if `isCameraputTesting` is valid
+- Set `isInputTesting` to `false` if `isInputTesting` is valid.
+- Set `isOutputTesting` to `false` if `isOutputTesting` is valid.
+- Set `isCameraputTesting` to `false` if `isCameraputTesting` is valid.
 
 ``` Swift
     override func viewWillDisappear() {
@@ -2013,18 +2015,18 @@ If `couldTest` is `true`:
 
 #### Create IBAction Methods
 
-- [Create Input / Output Device Change Methods](#create-input-output-device-change-methods)
-- [Create Input / Output Test Methods](#create-input-output-test-methods)
-- [Create Input / Output Volume Change Methods](#create-input-output-volume-change-methods)
+- [Create Input/Output Device Change Methods](#create-input-output-device-change-methods)
+- [Create Input/Output Test Methods](#create-input-output-test-methods)
+- [Create Input/Output Volume Change Methods](#create-input-output-volume-change-methods)
 - [Create Camera Methods](#create-camera-methods)
 
 
-##### Create Input / Output Device Change Methods
+##### Create Input/Output Device Change Methods
 
 The `doInputDeviceChanged()` method is applied to the input device dropdown menu created in the [DevicesViewController UI](#create-the-devicesviewcontroller-ui).
 
 - If `isInputTesting` is `true`, set the value to `false`.
-- Retrieve the `deviceId` using `indexOfSelectedItem` property of the `recordingDevices` dropdown menu and set the selected device using `agoraKit.setDevice()`
+- Retrieve the `deviceId` using the `indexOfSelectedItem` property of the `recordingDevices` dropdown menu and set the selected device using `agoraKit.setDevice()`.
 
 ``` Swift
     @IBAction func doInputDeviceChanged(_ sender: NSPopUpButton) {
@@ -2040,7 +2042,7 @@ The `doInputDeviceChanged()` method is applied to the input device dropdown menu
 The `doOutputDeviceChanged()` method is applied to the output device dropdown menu created in the [DevicesViewController UI](#create-the-devicesviewcontroller-ui).
 
 - If `isOutputTesting` is `true`, set the value to `false`.
-- Retrieve the `deviceId` using `indexOfSelectedItem` property of the `playoutDevices` dropdown menu and set the selected device using `agoraKit.setDevice()`
+- Retrieve the `deviceId` using the `indexOfSelectedItem` property of the `playoutDevices` dropdown menu and set the selected device using `agoraKit.setDevice()`.
 
 
 ``` Swift
@@ -2054,11 +2056,11 @@ The `doOutputDeviceChanged()` method is applied to the output device dropdown me
     }
 ```
 
-##### Create Input / Output Test Methods
+##### Create Input/Output Test Methods
 
 The `doInputDeviceChanged()` method is applied to the input device **Test** button created in the [DevicesViewController UI](#create-the-devicesviewcontroller-ui).
 
-Update the value of `isInputTesting`
+Update the value of `isInputTesting`.
 
 ``` Swift    
     @IBAction func doInputDeviceTestClicked(_ sender: NSButton) {
@@ -2068,7 +2070,7 @@ Update the value of `isInputTesting`
 
 The `doInputDeviceChanged()` method is applied to the output device **Test** button created in the [DevicesViewController UI](#create-the-devicesviewcontroller-ui).
 
-Update the value of `isOutputTesting`
+Update the value of `isOutputTesting`.
 
 ``` Swift
     @IBAction func doOutputDeviceTestClicked(_ sender: NSButton) {
@@ -2076,11 +2078,11 @@ Update the value of `isOutputTesting`
     }
 ```
 
-##### Create Input / Output Volume Change Methods
+##### Create Input/Output Volume Change Methods
 
 The `doInputDeviceChanged()` method is applied to the input device **Volume** slider created in the [DevicesViewController UI](#create-the-devicesviewcontroller-ui).
 
-Retrieve the input volume using `sender.intValue` and set the device volume using `agoraKit.setDeviceVolume()`
+Retrieve the input volume using the `sender.intValue` and set the device volume using `agoraKit.setDeviceVolume()`.
 
 
 ``` Swift
@@ -2092,7 +2094,7 @@ Retrieve the input volume using `sender.intValue` and set the device volume usin
 
 The `doOutputVolSliderChanged()` method is applied to the output device **Volume** slider created in the [DevicesViewController UI](#create-the-devicesviewcontroller-ui).
 
-Retrieve the output volume using `sender.intValue` and set the device volume using `agoraKit.setDeviceVolume()`
+Retrieve the output volume using the `sender.intValue` and set the device volume using `agoraKit.setDeviceVolume()`.
 
 ``` Swift
     @IBAction func doOutputVolSliderChanged(_ sender: NSSlider) {
@@ -2106,7 +2108,7 @@ Retrieve the output volume using `sender.intValue` and set the device volume usi
 The `doCameraChanged()` method is applied to the camera device dropdown menu created in the [DevicesViewController UI](#create-the-devicesviewcontroller-ui).
 
 - If `isCameraputTesting` is `true`, set the value to `false`.
-- Retrieve the `deviceId` using `indexOfSelectedItem` property of the `captureDevices` dropdown menu and set the selected device using `agoraKit.setDevice()`
+- Retrieve the `deviceId` using the `indexOfSelectedItem` property of the `captureDevices` dropdown menu and set the selected device using `agoraKit.setDevice()`.
 
 ``` Swift
     @IBAction func doCameraChanged(_ sender: NSPopUpButton) {
@@ -2121,7 +2123,7 @@ The `doCameraChanged()` method is applied to the camera device dropdown menu cre
 
 The `doCameraTestClicked()` method is applied to the camera device **Test** button created in the [DevicesViewController UI](#create-the-devicesviewcontroller-ui).
 
-Update the value of `isCameraputTesting`
+Update the value of `isCameraputTesting`.
 
 
 ``` Swift
@@ -2132,7 +2134,7 @@ Update the value of `isCameraputTesting`
 
 ### Create the DevicesViewController Class Extensions
 
-The configuration private methods for `DevicesViewController` are contained within two sets of extension.
+The configuration private methods for `DevicesViewController` are contained within two sets of extensions.
 
 ``` Swift
 private extension DevicesViewController {
@@ -2154,13 +2156,13 @@ The first extension contains methods that set the configuration and styles of th
 
 The `configStyle()` method configures the style of the `window`.
 
-Insert the full size content view to the style mask using `styleMask.insert()`.
+Insert the full-sized content view to the style mask using `styleMask.insert()`.
 
 Configure the `window` properties.
 
 `window` Property|Value|Description
 ---|---|---
-`titlebarAppearsTransparent`|`true`|Sets the window's title bar to be transparent
+`titlebarAppearsTransparent`|`true`|Makes the window's title bar transparent
 `isMovableByWindowBackground`|`true`|Enables the window to move by dragging on its background
 `minSize`|`CGSize(width: 600, height: 600)`|Minimum size of the window
 `maxSize`|`CGSize(width: 600, height: 600)`|Maximum size of the window
@@ -2178,8 +2180,8 @@ Configure the `window` properties.
 
 The `configButtonStyle()` method configures the style of the buttons.
 
-- Set the `intputDeviceTestButton`, `outputDeviceTestButton`, and `cameraTestButton` buttons to non-testing mode using `config()`
-- Set the `intputDeviceTestButton`, `outputDeviceTestButton`, and `cameraTestButton` buttons to hidden/not hidden using the `isHidden` property
+- Set the `intputDeviceTestButton`, `outputDeviceTestButton`, and `cameraTestButton` buttons to non-testing mode using `config()`.
+- Set the `intputDeviceTestButton`, `outputDeviceTestButton`, and `cameraTestButton` buttons to hidden/not hidden using the `isHidden` property.
 
 ``` Swift
     func configButtonStyle() {
@@ -2195,7 +2197,7 @@ The `configButtonStyle()` method configures the style of the buttons.
 
 The `config()` method configures the title of a button using the `title` property.
 
-If `isTesting` is `true`, set the `title` to `Stop Test`, otherwise set it to `Test`.
+If `isTesting` is `true`, set the `title` to `Stop Test`. Otherwise, set it to `Test`.
 
 ``` Swift
     func config(button: NSButton, isTesting: Bool) {
@@ -2211,9 +2213,9 @@ The `loadDevices()` method loads the selected devices for testing.
 
 Load the playout, recording, and video capture devices using `loadDevice()`.
 
-Create a notification observer for `DeviceListChangeNotificationKey` using `NotificationCenter.default.addObserver()`. When the event listener triggers, verify `notify.object` is a number, its `type` is valid before loading the device using `self?.loadDevice()`
+Create a notification observer for the `DeviceListChangeNotificationKey` using `NotificationCenter.default.addObserver()`. When the event listener is triggered, verify that the `notify.object` is a number and that its `type` is valid before loading the device using `self?.loadDevice()`.
 
-If `couldTest` is `true`, create a notification observer for `VolumeChangeNotificationKey` using `NotificationCenter.default.addObserver()`. When the event listener triggers, verify `notify.object` is a number, set the device volume using `self?.deviceVolume`
+If `couldTest` is `true`, create a notification observer for the `VolumeChangeNotificationKey` using `NotificationCenter.default.addObserver()`. When the event listener is triggered, verify that the `notify.object` is a number and set the device volume using `self?.deviceVolume`.
 
 ``` Swift
     func loadDevices() {
@@ -2239,19 +2241,19 @@ If `couldTest` is `true`, create a notification observer for `VolumeChangeNotifi
 
 The `loadDevice()` method loads a selected device.
 
-Ensure the device `type` is a valid device type before continuing with the remaining actions in the method.
+Ensure that the device `type` is a valid device type before continuing with the remaining actions in the method.
 
-Retrieve the device ID from `type` using `agoraKit.getDeviceId()` and apply changes to one of the following device types based on the value of `type`:
+Retrieve the device ID from the `type` using the `agoraKit.getDeviceId()` and apply changes to one of the following device types based on the value of `type`:
 
 Value|Description
 ---|---
 `.audioRecording`|Recording device
-`.audioPlayout`|playout device
+`.audioPlayout`|Playout device
 `.videoCapture`|video capture device
 
-- Set the devices array with the value of `devices`
-- Set the device ID with the value of `deviceId`
-- Update the dropdown menu for the device using `updatePopUpButton()`
+- Set the devices array with the value of `devices`.
+- Set the device ID with the value of `deviceId`.
+- Update the dropdown menu for the device using `updatePopUpButton()`.
 
 Complete the method by updating the volume using `updateVolume()`.
 
@@ -2285,10 +2287,10 @@ Complete the method by updating the volume using `updateVolume()`.
 
 The `updatePopUpButton()` method updates the contents of the popup button.
 
-1. Clear the contents of the button using `button.removeAllItems()`
-2. Iterate through the supplied `AgoraRtcDeviceInfo` array using `list.map()` and add each `info.deviceName` using `button.addItems()`
-3. Iterate through `list` and add each `info.deviceId` to `deviceIds`
-4. Verify `value` is not null and the `deviceIds.index()` is valid, then set the selected item with the `index` using `button.selectItem ()`
+1. Clear the contents of the button using `button.removeAllItems()`.
+2. Iterate through the supplied `AgoraRtcDeviceInfo` array using `list.map()` and add each `info.deviceName` using `button.addItems()`.
+3. Iterate through the `list` and add each `info.deviceId` to `deviceIds`.
+4. Verify that the `value` is not null and that the `deviceIds.index()` is valid, then set the selected item with the `index` using the `button.selectItem ()`.
 
 ``` Swift
     func updatePopUpButton(_ button: NSPopUpButton, withValue value: String?, inValueList list: [AgoraRtcDeviceInfo]) {
@@ -2306,7 +2308,7 @@ The `updatePopUpButton()` method updates the contents of the popup button.
     }
 ```
 
-The `updateVolume()` method updates the volume of one of the following devices, based on the value of `type`:
+The `updateVolume()` method updates the volume of one of the following devices, based on the value of the `type`:
 
 Type|UI Element name
 ---|---
@@ -2336,7 +2338,7 @@ Retrieve the volume using `agoraKit.getDeviceVolume()` and set the volume level 
 *SettingsViewController.swift* defines and connects application functionality with the [SettingsViewController UI](#create-the-settingsviewcontroller-ui).
 
 - [Create Variables, Protocols, and IBAction Methods](#create-variables-protocols-and-ibaction-methods)
-- [Create Create Methods and Extensions](#create-methods-and-extensions)
+- [Create Methods and Extensions](#create-methods-and-extensions)
 
 #### Create Variables, Protocols, and IBAction Methods
 
@@ -2353,7 +2355,7 @@ protocol SettingsVCDelegate: class {
 Variable|Description
 ---|---
 `profilePopUpButton`|`IBOutlet` variable. Maps to the profile popup button created in the [SettingsViewController UI](#create-the-settingsviewcontroller-ui).
-`videoProfile`|Agora Video Profile 
+`videoProfile`|Agora video profile 
 `delegate`|Optional `SettingsVCDelegate` object
 
 ``` Swift
@@ -2371,9 +2373,9 @@ class SettingsViewController: NSViewController {
 
 #### Create Methods and Extensions
 
-The `viewDidLoad()` is invoked when the application loads the view.
+The `viewDidLoad()` method is invoked when the application loads the view.
 
-Set `view.wantsLayer` to `true` and the view layer background color to `NSColor.white.cgColor`
+Set `view.wantsLayer` to `true` and the view layer background color to `NSColor.white.cgColor`.
 
 ``` Swift
     override func viewDidLoad() {
@@ -2386,7 +2388,7 @@ Set `view.wantsLayer` to `true` and the view layer background color to `NSColor.
     }
 ```
 
-The private `doProfileChanged()` method sets `videoProfile` with `AgoraVideoProfile` objects and is initialized with `AgoraVideoProfile.validProfileList()`.
+The private `doProfileChanged()` method sets the `videoProfile` with `AgoraVideoProfile` objects and is initialized with `AgoraVideoProfile.validProfileList()`.
 
 ``` Swift
     @IBAction func doProfileChanged(_ sender: NSPopUpButton) {
@@ -2405,7 +2407,7 @@ The `doConfirmClicked()` `IBAction` method is invoked by the **Confirm** button 
 
 The `loadProfileItems()` method is set within a private extension and populates the `profilePopUpButton` UI object with an array of `AgoraVideoProfile` objects.
 
-Loop through the items in `AgoraVideoProfile.validProfileList()` and add items to the UI using `profilePopUpButton.addItems()`.
+Loop through the items in the `AgoraVideoProfile.validProfileList()` and add items to the UI using `profilePopUpButton.addItems()`.
 
 Select a default item using `profilePopUpButton.selectItem()`.
 
@@ -2421,8 +2423,8 @@ private extension SettingsViewController {
 ```
 
 ## Resources
-- Find full API documentation in the [Document Center](https://docs.agora.io/en/)
-- [File bugs about this sample](https://github.com/AgoraIO/OpenVideoCall-macOS/issues)
+- Find full [API documentation in the Developer Center](https://docs.agora.io/en/). 
+- [File bugs about this sample](https://github.com/AgoraIO/OpenVideoCall-macOS/issues).
 
 ## Learn More
 - [1 to 1 Video Tutorial for MacOS/Swift](https://github.com/AgoraIO/Agora-macOS-Tutorial-Swift-1to1)
