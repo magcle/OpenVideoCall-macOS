@@ -65,7 +65,7 @@ class RoomViewController: NSViewController {
     }
     fileprivate var shouldCompressSelfView = false {
         didSet {
-            updateSelfViewVisiable()
+            updateSelfViewVisibility()
         }
     }
     
@@ -101,7 +101,7 @@ class RoomViewController: NSViewController {
             agoraKit.muteLocalVideoStream(videoMuted)
             setVideoMuted(videoMuted, forUid: 0)
             
-            updateSelfViewVisiable()
+            updateSelfViewVisibility()
         }
     }
     
@@ -279,9 +279,8 @@ private extension RoomViewController {
         
         videoViewLayout.layoutVideoViews()
         
-        updateSelfViewVisiable()
+        updateSelfViewVisibility()
         
-        //只有三人及以上时才能切换布局形式
         if sessions.count >= 3 {
             doubleClickEnabled = true
         } else {
@@ -314,7 +313,7 @@ private extension RoomViewController {
         fetchSession(of: uid)?.isVideoMuted = muted
     }
     
-    func updateSelfViewVisiable() {
+    func updateSelfViewVisibility() {
         guard let selfView = videoSessions.first?.hostingView else {
             return
         }
@@ -441,8 +440,8 @@ extension RoomViewController: AgoraRtcEngineDelegate {
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, firstRemoteVideoDecodedOfUid uid: UInt, size: CGSize, elapsed: Int) {
         let userSession = videoSession(of: uid)
-        let sie = size.fixedSize()
-        userSession.size = sie
+        let size = size.fixedSize()
+        userSession.size = size
         userSession.updateMediaInfo(resolution: size)
         agoraKit.setupRemoteVideo(userSession.canvas)
     }
