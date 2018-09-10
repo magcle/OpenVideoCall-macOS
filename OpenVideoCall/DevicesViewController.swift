@@ -80,8 +80,6 @@ class DevicesViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.wantsLayer = true
-        view.layer?.backgroundColor = NSColor.white.cgColor
         cameraPreviewView.wantsLayer = true
         cameraPreviewView.layer?.backgroundColor = NSColor.black.cgColor
         

@@ -24,9 +24,6 @@ class MainViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.wantsLayer = true
-        view.layer?.backgroundColor = NSColor.white.cgColor
-        
         loadAgoraKit()
         loadEncryptionItems()
     }
